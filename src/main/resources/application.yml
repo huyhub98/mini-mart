@@ -1,0 +1,11 @@
+server:
+  port: 8998
+  shutdown: graceful
+user:
+  admin:
+    id: admin
+    password: admin
+
+#mongodb
+spring.data.mongodb.port: 27017
+spring.data.mongodb.database: mini-mart
