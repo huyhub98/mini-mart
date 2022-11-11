@@ -3,6 +3,7 @@ package com.demo.project.minimart.service;
 import com.demo.project.minimart.interfaces.UserInterface;
 import com.demo.project.minimart.interfaces.UserRepository;
 import com.demo.project.minimart.model.User;
+import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.List;
 
 @Service
+@Log4j
 public class UserService implements UserInterface {
     private final UserRepository userRepository;
 
