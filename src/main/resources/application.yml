@@ -9,3 +9,7 @@ user:
 #mongodb
 spring.data.mongodb.port: 27017
 spring.data.mongodb.database: mini-mart
+
+jwt:
+  secret: change-me-in-production-change-me-in-production-change-me
+  expirationMinutes: 60

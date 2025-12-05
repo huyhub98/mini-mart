@@ -4,11 +4,10 @@ package com.demo.project.minimart.controller;
 import com.demo.project.minimart.model.User;
 import com.demo.project.minimart.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("minimart")
+@RestController
+@RequestMapping("/minimart")
 public class UserController {
 
     private final UserService userService;
