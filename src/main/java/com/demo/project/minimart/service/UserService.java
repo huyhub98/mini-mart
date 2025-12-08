@@ -3,7 +3,8 @@ package com.demo.project.minimart.service;
 import com.demo.project.minimart.interfaces.UserInterface;
 import com.demo.project.minimart.interfaces.UserRepository;
 import com.demo.project.minimart.model.User;
-import lombok.extern.log4j.Log4j;
+
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,12 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service
-@Log4j
 public class UserService implements UserInterface {
     private final UserRepository userRepository;
+    private final Logger log = getLogger(UserService.class);
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,10 +26,12 @@ public class UserService implements UserInterface {
     @Override
     public ResponseEntity<?> addUser(User user) {
         if (ObjectUtils.isEmpty(user)) {
+            log.error("user input is missing");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         generateId(user);
         userRepository.insert(user);
+        log.info("User: {}", user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
@@ -37,12 +42,14 @@ public class UserService implements UserInterface {
             userPatch.setId(user.get().getId());
             userRepository.save(userPatch);
         }
+        log.info("saved user with id: {}", userPatch.getId());
         return new ResponseEntity<>(userPatch, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> deleteUser(String id) {
         userRepository.deleteById(id);
+        log.info("deleted user with id: {}", id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -54,6 +61,7 @@ public class UserService implements UserInterface {
                 return new ResponseEntity<>(ret.get(), HttpStatus.OK);
             }
         } catch (Exception e) {
+            log.error("invalid id, user not found");
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
         return getUserById(id);
@@ -71,6 +79,9 @@ public class UserService implements UserInterface {
         if (!ObjectUtils.isEmpty(lastUser)) {
             var newUserId = Integer.parseInt(lastUser.getId()) + 1;
             user.setId(String.valueOf(newUserId));
+            log.info("generating new user id {}", newUserId);
+        } else {
+            user.setId("1");
         }
     }
 
