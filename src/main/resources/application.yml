@@ -10,6 +10,22 @@ user:
 spring.data.mongodb.port: 27017
 spring.data.mongodb.database: mini-mart
 
+spring:
+  #  data:
+  #    mongodb:
+  #      port: 27017
+  #      database: mini-mart
+  #      uri: mongodb://host.docker.internal:27017/mini-mart
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ba524809e18fb77ea2d2
+            clientSecret: ace1ad9b41a499acdbcb81ec88aa71c47a7e8c80
+
 jwt:
-  secret: change-me-in-production-change-me-in-production-change-me
+  secret: w3mOquLA41Pz59na3O7wDc2Afdde+txeX3X3gTHnphfrSAonpGkOvNVspJi54oR8bTFmwXdH9t3UwvkGgbSQGg==
   expirationMinutes: 60
+
+version: 1.0.0

@@ -1,5 +1,6 @@
 package com.demo.project.minimart.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Getter
 @Setter
 @Document(collection = "User")
+@AllArgsConstructor
 public class User {
     @Id
     private String id;
