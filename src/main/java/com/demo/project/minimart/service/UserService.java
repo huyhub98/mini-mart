@@ -4,13 +4,17 @@ import com.demo.project.minimart.interfaces.UserInterface;
 import com.demo.project.minimart.interfaces.UserRepository;
 import com.demo.project.minimart.model.User;
 
+import com.demo.project.minimart.model.UserResponse;
+import com.demo.project.minimart.util.UserMapping;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -72,6 +76,28 @@ public class UserService implements UserInterface {
         var ret = userRepository.findAll();
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
+
+    @Override
+    public UserResponse getUserByKeycloakId(Jwt jwt) {
+        String keycloakId = jwt.getSubject();
+        String email = jwt.getClaim("email");
+        String username = jwt.getClaimAsString("preferred_username");
+        Optional<User> ret = userRepository.findByKeycloakId(keycloakId);
+        if (ret.isEmpty()) {
+            Optional<User> userByEmail = userRepository.findByEmail(email);
+            if (userByEmail.isPresent()) {
+                return UserMapping.toUserResponse(userByEmail.get());
+            }
+        }
+        User user = new User();
+        generateId(user);
+        user.setKeycloakId(keycloakId);
+        user.setEmail(email);
+        user.setName(username);
+        user.setRole(User.Role.USER);
+        return UserMapping.toUserResponse(userRepository.save(user));
+    }
+
 
     private void generateId(User user) {
         var users = userRepository.findAll();

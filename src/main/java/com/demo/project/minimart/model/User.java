@@ -3,12 +3,13 @@ package com.demo.project.minimart.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
 @Setter
-@Document(collection = "User")
+@Document(collection = "users")
 public class User {
     @Id
     private String id;
@@ -17,11 +18,39 @@ public class User {
     private String name;
 
     @Field(name = "age")
-    private String age;
+    private Integer age;
 
     @Field(name = "address")
     private String address;
 
+    @Indexed(unique = true)
     @Field(name = "email")
     private String email;
+
+    @Field(name = "role")
+    private Role role;
+
+    @Field(name = "status")
+    private String status;
+
+    @Indexed(unique = true)
+    @Field(name = "keycloak_id")
+    private String keycloakId;
+
+    public enum Role {
+        ADMIN("admin"),
+        USER("user"),
+        GOLD_USER("goldUser"),
+        DIAMOND_USER("diamondUser");
+
+        private String role;
+
+        Role(String role) {
+            this.role = role;
+        }
+
+        public String getRole() {
+            return role;
+        }
+    }
 }

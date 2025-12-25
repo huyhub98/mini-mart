@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4.7
+    # Keycloak sẽ sử dụng lệnh 'start' thay vì 'start-dev' khi kết nối với DB ngoài
+    # Phải cung cấp biến môi trường DB
+    command: start-dev
+#    command: start # cai nay danh cho prod, cau hinh se khac
+    environment:
+      # Cấu hình Admin user
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+
+      # Cấu hình kết nối DB
+      KC_HTTP_ENABLED: "true" # Cho phép HTTP
+      KC_PROXY: edge # Quan trọng: Giúp Keycloak hiểu nó đang chạy sau proxy (chính là Docker)
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+
+      # Keycloak chạy ở chế độ Production (Bắt buộc)
+      KC_HOSTNAME: localhost
+
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres # Đảm bảo Postgres khởi động trước
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # <--- Dữ liệu DB được lưu ra ngoài Volume
+
+volumes:
+  postgres_data: # <--- Định nghĩa volume bền vững

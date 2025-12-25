@@ -2,8 +2,11 @@ package com.demo.project.minimart.controller;
 
 
 import com.demo.project.minimart.model.User;
+import com.demo.project.minimart.model.UserResponse;
 import com.demo.project.minimart.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +37,11 @@ public class UserController {
     @GetMapping(value = "/getAllUser")
     public ResponseEntity<?> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping(value = "/users/me", produces = "application/json")
+    public UserResponse getUserByKeycloakId(@AuthenticationPrincipal Jwt jwt) {
+        return userService.getUserByKeycloakId(jwt);
     }
 
     @DeleteMapping(value = "/delete/{id}")
