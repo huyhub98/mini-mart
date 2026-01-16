@@ -37,20 +37,17 @@ public class User {
     @Field(name = "keycloak_id")
     private String keycloakId;
 
+    @Getter
     public enum Role {
         ADMIN("admin"),
         USER("user"),
         GOLD_USER("goldUser"),
         DIAMOND_USER("diamondUser");
 
-        private String role;
+        private final String value;
 
-        Role(String role) {
-            this.role = role;
-        }
-
-        public String getRole() {
-            return role;
+        Role(String value) {
+            this.value = value;
         }
     }
 }

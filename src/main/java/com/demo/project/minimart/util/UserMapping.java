@@ -14,7 +14,7 @@ public class UserMapping {
         userResponse.setAge(user.getAge());
         userResponse.setEmail(user.getEmail());
         userResponse.setAddress(user.getAddress());
-        userResponse.setRole(user.getRole().getRole());
+        userResponse.setRole(user.getRole().getValue());
         userResponse.setStatus(user.getStatus());
         return userResponse;
     }
