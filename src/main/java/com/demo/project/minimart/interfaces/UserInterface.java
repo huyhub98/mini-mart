@@ -17,6 +17,6 @@ public interface UserInterface {
 
     ResponseEntity<?> getAllUsers();
 
-    UserResponse getUserByKeycloakId(Jwt jwt);
+    UserResponse findOrCreateUserByKeycloakId(Jwt jwt);
 
 }

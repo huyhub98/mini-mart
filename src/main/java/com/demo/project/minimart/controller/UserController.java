@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping(value = "/users/me", produces = "application/json")
     public UserResponse getUserByKeycloakId(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getUserByKeycloakId(jwt);
+        return userService.findOrCreateUserByKeycloakId(jwt);
     }
 
     @DeleteMapping(value = "/delete/{id}")

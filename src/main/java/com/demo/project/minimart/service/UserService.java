@@ -41,13 +41,37 @@ public class UserService implements UserInterface {
 
     @Override
     public ResponseEntity<?> patchUser(String id, User userPatch) {
-        var user = userRepository.findById(id);
-        if (user.isPresent()) {
-            userPatch.setId(user.get().getId());
-            userRepository.save(userPatch);
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
+            if (userPatch.getName() != null) {
+                existingUser.setName(userPatch.getName());
+            }
+            if (userPatch.getEmail() != null) {
+                existingUser.setEmail(userPatch.getEmail());
+            }
+            if (userPatch.getRole() != null) {
+                existingUser.setRole(userPatch.getRole());
+            }
+            if (userPatch.getAddress() != null) {
+                existingUser.setAddress(userPatch.getAddress());
+            }
+            if (userPatch.getAge() != null) {
+                existingUser.setAge(userPatch.getAge());
+            }
+            if (userPatch.getStatus() != null) {
+                existingUser.setStatus(userPatch.getStatus());
+            }
+            if (userPatch.getKeycloakId() != null){
+                existingUser.setKeycloakId(userPatch.getKeycloakId());
+            }
+            userRepository.save(existingUser);
+            log.info("Patched user with id: {}", id);
+            return new ResponseEntity<>(existingUser, HttpStatus.OK);
+        } else {
+            log.error("User not found with id: {}", id);
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
-        log.info("saved user with id: {}", userPatch.getId());
-        return new ResponseEntity<>(userPatch, HttpStatus.OK);
     }
 
     @Override
@@ -59,16 +83,13 @@ public class UserService implements UserInterface {
 
     @Override
     public ResponseEntity<?> getUserById(String id) {
-        try {
-            var ret = userRepository.findById(id);
-            if (ret.isPresent()) {
-                return new ResponseEntity<>(ret.get(), HttpStatus.OK);
-            }
-        } catch (Exception e) {
+        var ret = userRepository.findById(id);
+        if (ret.isPresent()) {
+            return new ResponseEntity<>(ret.get(), HttpStatus.OK);
+        } else {
             log.error("invalid id, user not found");
-            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
         }
-        return getUserById(id);
     }
 
     @Override
@@ -78,7 +99,7 @@ public class UserService implements UserInterface {
     }
 
     @Override
-    public UserResponse getUserByKeycloakId(Jwt jwt) {
+    public UserResponse findOrCreateUserByKeycloakId(Jwt jwt) {
         String keycloakId = jwt.getSubject();
         String email = jwt.getClaim("email");
         String username = jwt.getClaimAsString("preferred_username");
